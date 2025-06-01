@@ -46,4 +46,4 @@ jobs:
           SOURCE: "cicd"  # 直接指定下载的构建产物
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # 远程服务器地址
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # 远程服务器用户名
-          REMOTE_PATH: ${{ secrets.TARGET }}  # 远程服务器目标路径
+          TARGET: "/www/wwwroot/cicd/"  # 远程服务器目标路径
