@@ -47,3 +47,19 @@ jobs:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # 远程服务器地址
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # 远程服务器用户名
           TARGET: ${{ secrets.REMOTE_TARGET }}  # 远程服务器目标路径
+
+      - name: Set permissions and restart service  # 设置权限并重启服务
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.ACCESS_TOKEN }}
+          script: |
+            echo "Setting executable permission..."
+            chmod +x ${{ secrets.REMOTE_TARGET }}/cicd
+            
+            echo "Restarting systemd service..."
+            sudo systemctl restart cicd.service
+            
+            echo "Checking service status..."
+            sudo systemctl status cicd.service --no-pager --lines=20
