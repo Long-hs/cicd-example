@@ -39,29 +39,11 @@ jobs:
           name: cicd-build  # 要下载的构建产物名称
 
       - name: Deploy  # 通过 SSH 部署到远程服务器
-        uses: easingthemes/ssh-deploy@v2.0.7
-        env:
+        uses: easingthemes/ssh-deploy@main
+        with:
           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}  # SSH 私钥，从 GitHub 仓库密钥获取
           ARGS: "-avz --delete"  # rsync 参数：归档模式、详细输出、压缩传输、删除目标目录多余文件
-          SOURCE: "cicd"  # 源文件（构建产物）
+          SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # 远程服务器地址
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # 远程服务器用户名
           TARGET: ${{ secrets.TARGET }}  # 远程服务器目标路径
-
-      - name: Reload systemd manager configuration  # 重新加载 systemd 配置
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-            "sudo systemd-run --unit=cicd-reload sudo systemctl daemon-reload"
-        shell: bash
-
-      - name: Restart service  # 重启服务
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-            "sudo systemd-run --unit=cicd-restart sudo systemctl restart cicd_test"
-        shell: bash
-
-      - name: Verify service status  # 验证服务状态
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} \
-            "sudo systemctl is-active --quiet cicd_test || (echo 'Service is not running'; sudo systemctl status cicd_test; exit 1)"
-        shell: bash
