@@ -43,7 +43,7 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}  # SSH 私钥，从 GitHub 仓库密钥获取
           ARGS: "-avz --delete"  # rsync 参数：归档模式、详细输出、压缩传输、删除目标目录多余文件
-          SOURCE: "dist/"
+          SOURCE: "cicd"  # 直接指定下载的构建产物
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}  # 远程服务器地址
           REMOTE_USER: ${{ secrets.REMOTE_USER }}  # 远程服务器用户名
           TARGET: ${{ secrets.TARGET }}  # 远程服务器目标路径
